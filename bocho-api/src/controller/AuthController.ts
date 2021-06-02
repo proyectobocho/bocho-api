@@ -17,7 +17,7 @@ class AuthController {
         let user: User;
 
         try {
-            user = await userRepo.findOneOrFail({ where: { email: email } });
+            user = await userRepo.findOneOrFail({ where: { email: email } }); 
         } catch (e) {
             return res.status(400).json({ message: "Usuario y/o contraseña incorrectos" });
         }
@@ -51,12 +51,14 @@ class AuthController {
 
         const errors = await validate(user, validationOpt);
         if (errors.length > 0) {
+
             let err = [];
 
             for (let i in errors) {
                 for (let j in errors[i].constraints) {
                     err.push({
-                        "message": errors[i].constraints[j]
+                        "message": errors[i].constraints[j],
+                        "campo":errors[i].property
                     });
                 }
             }
@@ -70,7 +72,7 @@ class AuthController {
             user.hashPassword();
             await userRepo.save(user);
         } catch (e) {
-            console.log(e);
+            //console.log(e);
             return res.status(409).json({ message: "el usuario ya existe" });
         }
 

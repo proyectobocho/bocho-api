@@ -4,12 +4,12 @@ import { Comentario } from "./Comentario";
 import { User } from "./User";
 
 @Entity()
-
+//agregar validaciones con class-validator
 export class Publicacion{
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column({type: "blob"})
+    @Column({type: "text"})
     @IsNotEmpty()
     contenido:string;
 
@@ -19,10 +19,13 @@ export class Publicacion{
     @Column({type:"datetime"})
     fecha:Date;
 
-    @Column({type:"boolean",default:false})
+    @Column({type:"datetime"})
+    modificado:Date;
+
+    @Column({type:"boolean"})
     privado:boolean;
 
-    @ManyToOne(()=>User,user=>user.publicaciones)
+    @ManyToOne(()=>User,user=>user.publicaciones,{nullable:false})
     user:User;
 
     @OneToMany(()=>Comentario,comentario=>comentario.publicacion)

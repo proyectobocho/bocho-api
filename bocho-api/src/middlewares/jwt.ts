@@ -13,11 +13,12 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
         return res.status(401).json({ message: "no esta logueado" });
     }
 
-    const { userId, email } = jwtPayload;
+    //const { userId, email } = jwtPayload;
+    //console.log("jwtPayload: ",jwtPayload);
 
-    const newToken = jwt.sign({ userId, email }, config.jwtSecret, { expiresIn: "1h" });
+    //const newToken = jwt.sign({ userId, email }, config.jwtSecret, { expiresIn: "1h" });
 
-    res.setHeader('token', newToken);
+    //res.setHeader('token', newToken);
 
     next();
 }

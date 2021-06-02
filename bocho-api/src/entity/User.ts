@@ -51,7 +51,7 @@ export class User {
     publicaciones:Publicacion[];
 
     @OneToMany(()=>Comentario,comentario=>comentario.user)
-    public comentario!:Comentario[]
+    public comentario!:Comentario[];
 
     hashPassword(): void {
         const salt = bcrypt.genSaltSync(10);
