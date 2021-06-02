@@ -60,7 +60,7 @@ export class PublicacionController {
         publicacion.privado = priv;
         publicacion.fecha = fecha;
         publicacion.user = userId;
-        publicacion.modificado=fecha;
+        publicacion.modificado = fecha;
 
         const validationOpt = { validationError: { target: false, value: false } };
 
