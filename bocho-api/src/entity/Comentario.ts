@@ -2,24 +2,27 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Publicacion } from "./Publicacion";
 import { User } from "./User";
 
-@Entity({name:"comentario"})
+@Entity({ name: "comentario" })
 
-export class Comentario{
+export class Comentario {
     @PrimaryGeneratedColumn()
-    public id!:number;
+    public id!: number;
 
     @Column()
-    public userId!:number;
+    public userId!: number;
 
     @Column()
-    public publicacionId!:number;
+    public publicacionId!: number;
 
     @Column()
-    public descripcion!:string;
+    public descripcion!: string;
 
-    @ManyToOne(()=>User,user=>user.comentario)
-    public user!:User;
+    @Column({ type: "datetime" })
+    public fecha!: Date;
 
-    @ManyToOne(()=>Publicacion,publicacion=>publicacion.comentario)
-    public publicacion!:Publicacion;
+    @ManyToOne(() => User, user => user.comentario)
+    public user!: User;
+
+    @ManyToOne(() => Publicacion, publicacion => publicacion.comentario)
+    public publicacion!: Publicacion;
 }

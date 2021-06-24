@@ -22,10 +22,23 @@ export class PublicacionController {
 
             publicacion = await publicacionRepo
                 .createQueryBuilder("publicacion")
-                .select(["publicacion.linkDoc", "publicacion.contenido", "publicacion.fecha", "User.nombre", "User.apellido", "User.email"])
+                .select([
+                    "publicacion.linkDoc",
+                    "publicacion.contenido",
+                    "publicacion.fecha",
+                    "publicacion.modificado",
+                    "publicacion.titulo",
+                    "publicacion.id",
+                    "User.nombre",
+                    "User.apellido",
+                    "User.email",
+                    "comentario.id",
+                ])
                 .innerJoin("publicacion.user", "User")
+                .leftJoin("publicacion.comentario", "comentario")
                 .where("publicacion.privado=0")
-                .orderBy("publicacion.fecha", "DESC")
+                .andWhere("publicacion.grupo IS NULL")
+                .orderBy("publicacion.modificado", "DESC")
                 .getMany();
 
         } catch (e) {
@@ -40,11 +53,79 @@ export class PublicacionController {
         }
     };
 
+    static getMyPublications = async (req: Request, res: Response) => {
+        const { userId } = res.locals.jwtPayload;
+
+        const publicacionRepo = getRepository(Publicacion);
+        let publicacion;
+
+        try {
+            publicacion = await publicacionRepo
+                .createQueryBuilder("publicacion")
+                .select([
+                    "publicacion.linkDoc",
+                    "publicacion.contenido",
+                    "publicacion.fecha",
+                    "publicacion.modificado",
+                    "publicacion.id",
+                    "publicacion.titulo",
+                    "publicacion.privado",
+                    "grupo.nombre",
+                    "comentario.descripcion",
+                    "comentario.fecha",
+                    "user.nombre",
+                    "user.apellido",
+                    "user.email",
+                ])
+                .leftJoin("publicacion.comentario", "comentario")
+                .leftJoin("publicacion.grupo","grupo")
+                .leftJoin("comentario.user", "user")
+                .where("publicacion.user=:id", { id: userId })
+                .orderBy("publicacion.modificado", "DESC")
+                .getMany();
+            /* .find({
+                select: ["linkDoc", "contenido", "fecha", "modificado", "id", "privado"],
+                where: { user: userId },
+                relations:["comentario"]
+            }); */
+        } catch (e) {
+            console.log("e: ", e);
+            return res.status(404).json({ message: "algo anda mal :(" })
+        }
+
+        if (publicacion.length > 0) {
+            return res.send(publicacion);
+        } else {
+            return res.status(404).json({ message: "no hubo resultado" });
+        }
+    };
+
+    static getById = async (req: Request, res: Response) => {
+        const { userId } = res.locals.jwtPayload;
+        const { id } = req.params;
+
+        const publicacionRepo = getRepository(Publicacion);
+        try {
+            const publicacion = await publicacionRepo
+                .findOneOrFail(
+                    id,
+                    {
+                        select: ["linkDoc", "modificado", "privado", "contenido", "fecha"],
+                        where: { user: userId }
+                    });
+
+            return res.send(publicacion);
+        } catch (e) {
+            console.log("e: ", e);
+            return res.status(404).json({ message: "no hubo resultado" });
+        }
+    };
+
     static newPublicacion = async (req: Request, res: Response) => {
 
         //cambiar el nombre de la columna linkDoc por imagen
         const { userId } = res.locals.jwtPayload;
-        const { contenido, linkDoc, privado } = req.body;
+        const { contenido, linkDoc, privado, titulo, grupoId } = req.body;
         const publicacion = new Publicacion();
         const fecha = new Date();
         let priv: boolean;
@@ -52,6 +133,10 @@ export class PublicacionController {
             priv = true;
         } else {
             priv = false
+        }
+
+        if (grupoId) {
+            publicacion.grupo = grupoId;
         }
         //console.log(priv);
 
@@ -61,6 +146,7 @@ export class PublicacionController {
         publicacion.fecha = fecha;
         publicacion.user = userId;
         publicacion.modificado = fecha;
+        publicacion.titulo = titulo;
 
         const validationOpt = { validationError: { target: false, value: false } };
 
@@ -94,7 +180,9 @@ export class PublicacionController {
     static editPublicacion = async (req: Request, res: Response) => {
         const { userId } = res.locals.jwtPayload;
         const { id } = req.params;
-        const { contenido, linkDoc, privado } = req.body;
+        const { contenido, linkDoc, privado, titulo } = req.body;
+        //console.log("req: ",req.body);
+        //console.log("privado: ",privado);
 
         let publicacion;
         let priv: boolean;
@@ -113,6 +201,7 @@ export class PublicacionController {
             publicacion.linkDoc = linkDoc;
             publicacion.privado = priv;
             publicacion.modificado = fecha;
+            publicacion.titulo = titulo;
 
         } catch (e) {
             console.log("e: ", e);

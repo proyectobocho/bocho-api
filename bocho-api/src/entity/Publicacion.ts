@@ -1,33 +1,40 @@
 import { IsNotEmpty } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comentario } from "./Comentario";
+import { Grupo } from "./Grupo";
 import { User } from "./User";
 
 @Entity()
 //agregar validaciones con class-validator
-export class Publicacion{
+export class Publicacion {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
-    @Column({type: "text"})
+    @Column({ type: "text" })
     @IsNotEmpty()
-    contenido:string;
+    contenido: string;
 
     @Column()
-    linkDoc:string;
+    titulo: string;
 
-    @Column({type:"datetime"})
-    fecha:Date;
+    @Column()
+    linkDoc: string;
 
-    @Column({type:"datetime"})
-    modificado:Date;
+    @Column({ type: "datetime" })
+    fecha: Date;
 
-    @Column({type:"boolean"})
-    privado:boolean;
+    @Column({ type: "datetime", default: null })
+    modificado: Date;
 
-    @ManyToOne(()=>User,user=>user.publicaciones,{nullable:false})
-    user:User;
+    @Column({ type: "boolean" })
+    privado: boolean;
 
-    @OneToMany(()=>Comentario,comentario=>comentario.publicacion)
-    public comentario!:Comentario[];
+    @ManyToOne(() => User, user => user.publicaciones, { nullable: false })
+    user: User;
+
+    @OneToMany(() => Comentario, comentario => comentario.publicacion)
+    public comentario!: Comentario[];
+
+    @ManyToOne(() => Grupo, grupo => grupo.publicaciones)
+    grupo: Grupo;
 }

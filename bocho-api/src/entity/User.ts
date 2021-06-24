@@ -4,6 +4,7 @@ import * as bcrypt from "bcryptjs"
 import { GradoEstudio } from "./GradoEstudio";
 import { Publicacion } from "./Publicacion";
 import { Comentario } from "./Comentario";
+import { Integrante } from "./Integrante";
 
 @Entity()
 @Unique(['email'])
@@ -52,6 +53,9 @@ export class User {
 
     @OneToMany(()=>Comentario,comentario=>comentario.user)
     public comentario!:Comentario[];
+
+    @OneToMany(()=>Integrante,integrante=>integrante.user)
+    public integrante!:Integrante[];
 
     hashPassword(): void {
         const salt = bcrypt.genSaltSync(10);

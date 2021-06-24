@@ -30,7 +30,7 @@
       "typeorm": "0.2.29"
    },
    "scripts": {
-      "start": "ts-node src/index.ts",
+      "start": "node dist/index.js",
       "tsc": "tsc",
       "dev":"set debug=* && ts-node-dev --respawn --transpile-only ./src/index.ts"
    }
