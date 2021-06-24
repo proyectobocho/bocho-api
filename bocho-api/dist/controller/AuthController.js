@@ -99,7 +99,8 @@ var AuthController = /** @class */ (function () {
                         for (i in errors) {
                             for (j in errors[i].constraints) {
                                 err.push({
-                                    "message": errors[i].constraints[j]
+                                    "message": errors[i].constraints[j],
+                                    "campo": errors[i].property
                                 });
                             }
                         }
@@ -117,7 +118,7 @@ var AuthController = /** @class */ (function () {
                     return [3 /*break*/, 5];
                 case 4:
                     e_2 = _b.sent();
-                    console.log(e_2);
+                    //console.log(e);
                     return [2 /*return*/, res.status(409).json({ message: "el usuario ya existe" })];
                 case 5:
                     res.status(200).json({ message: "usuario creado" });

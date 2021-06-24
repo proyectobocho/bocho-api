@@ -13,8 +13,10 @@ exports.Publicacion = void 0;
 var class_validator_1 = require("class-validator");
 var typeorm_1 = require("typeorm");
 var Comentario_1 = require("./Comentario");
+var Grupo_1 = require("./Grupo");
 var User_1 = require("./User");
 var Publicacion = /** @class */ (function () {
+    //agregar validaciones con class-validator
     function Publicacion() {
     }
     __decorate([
@@ -22,10 +24,14 @@ var Publicacion = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Publicacion.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column({ type: "blob" }),
+        typeorm_1.Column({ type: "text" }),
         class_validator_1.IsNotEmpty(),
         __metadata("design:type", String)
     ], Publicacion.prototype, "contenido", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Publicacion.prototype, "titulo", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
@@ -35,19 +41,28 @@ var Publicacion = /** @class */ (function () {
         __metadata("design:type", Date)
     ], Publicacion.prototype, "fecha", void 0);
     __decorate([
-        typeorm_1.Column({ type: "boolean", default: false }),
+        typeorm_1.Column({ type: "datetime", default: null }),
+        __metadata("design:type", Date)
+    ], Publicacion.prototype, "modificado", void 0);
+    __decorate([
+        typeorm_1.Column({ type: "boolean" }),
         __metadata("design:type", Boolean)
     ], Publicacion.prototype, "privado", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.publicaciones; }),
+        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.publicaciones; }, { nullable: false }),
         __metadata("design:type", User_1.User)
     ], Publicacion.prototype, "user", void 0);
     __decorate([
         typeorm_1.OneToMany(function () { return Comentario_1.Comentario; }, function (comentario) { return comentario.publicacion; }),
         __metadata("design:type", Array)
     ], Publicacion.prototype, "comentario", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function () { return Grupo_1.Grupo; }, function (grupo) { return grupo.publicaciones; }),
+        __metadata("design:type", Grupo_1.Grupo)
+    ], Publicacion.prototype, "grupo", void 0);
     Publicacion = __decorate([
         typeorm_1.Entity()
+        //agregar validaciones con class-validator
     ], Publicacion);
     return Publicacion;
 }());

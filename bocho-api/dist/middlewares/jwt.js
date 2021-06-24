@@ -13,9 +13,10 @@ exports.checkJwt = function (req, res, next) {
     catch (e) {
         return res.status(401).json({ message: "no esta logueado" });
     }
-    var userId = jwtPayload.userId, email = jwtPayload.email;
-    var newToken = jwt.sign({ userId: userId, email: email }, config_1.default.jwtSecret, { expiresIn: "1h" });
-    res.setHeader('token', newToken);
+    //const { userId, email } = jwtPayload;
+    //console.log("jwtPayload: ",jwtPayload);
+    //const newToken = jwt.sign({ userId, email }, config.jwtSecret, { expiresIn: "1h" });
+    //res.setHeader('token', newToken);
     next();
 };
 //# sourceMappingURL=jwt.js.map

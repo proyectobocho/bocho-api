@@ -9,45 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Comentario = void 0;
+exports.Integrante = void 0;
 var typeorm_1 = require("typeorm");
-var Publicacion_1 = require("./Publicacion");
+var Grupo_1 = require("./Grupo");
 var User_1 = require("./User");
-var Comentario = /** @class */ (function () {
-    function Comentario() {
+var Integrante = /** @class */ (function () {
+    function Integrante() {
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Comentario.prototype, "id", void 0);
+    ], Integrante.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", Number)
-    ], Comentario.prototype, "userId", void 0);
+    ], Integrante.prototype, "grupoId", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", Number)
-    ], Comentario.prototype, "publicacionId", void 0);
+    ], Integrante.prototype, "userId", void 0);
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Comentario.prototype, "descripcion", void 0);
+    ], Integrante.prototype, "rol", void 0);
     __decorate([
-        typeorm_1.Column({ type: "datetime" }),
-        __metadata("design:type", Date)
-    ], Comentario.prototype, "fecha", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.comentario; }),
+        typeorm_1.ManyToOne(function () { return User_1.User; }, function (user) { return user.integrante; }),
         __metadata("design:type", User_1.User)
-    ], Comentario.prototype, "user", void 0);
+    ], Integrante.prototype, "user", void 0);
     __decorate([
-        typeorm_1.ManyToOne(function () { return Publicacion_1.Publicacion; }, function (publicacion) { return publicacion.comentario; }),
-        __metadata("design:type", Publicacion_1.Publicacion)
-    ], Comentario.prototype, "publicacion", void 0);
-    Comentario = __decorate([
-        typeorm_1.Entity({ name: "comentario" })
-    ], Comentario);
-    return Comentario;
+        typeorm_1.ManyToOne(function () { return Grupo_1.Grupo; }, function (grupo) { return grupo.integrante; }),
+        __metadata("design:type", Grupo_1.Grupo)
+    ], Integrante.prototype, "grupo", void 0);
+    Integrante = __decorate([
+        typeorm_1.Entity({ name: "integrante" })
+    ], Integrante);
+    return Integrante;
 }());
-exports.Comentario = Comentario;
-//# sourceMappingURL=Comentario.js.map
+exports.Integrante = Integrante;
+//# sourceMappingURL=Integrante.js.map

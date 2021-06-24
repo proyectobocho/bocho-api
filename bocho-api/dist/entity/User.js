@@ -16,6 +16,7 @@ var bcrypt = require("bcryptjs");
 var GradoEstudio_1 = require("./GradoEstudio");
 var Publicacion_1 = require("./Publicacion");
 var Comentario_1 = require("./Comentario");
+var Integrante_1 = require("./Integrante");
 var User = /** @class */ (function () {
     function User() {
     }
@@ -81,6 +82,10 @@ var User = /** @class */ (function () {
         typeorm_1.OneToMany(function () { return Comentario_1.Comentario; }, function (comentario) { return comentario.user; }),
         __metadata("design:type", Array)
     ], User.prototype, "comentario", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function () { return Integrante_1.Integrante; }, function (integrante) { return integrante.user; }),
+        __metadata("design:type", Array)
+    ], User.prototype, "integrante", void 0);
     User = __decorate([
         typeorm_1.Entity(),
         typeorm_1.Unique(['email'])

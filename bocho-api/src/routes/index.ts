@@ -1,11 +1,11 @@
 import { Router } from "express";
-import auth from "./auth";
-import user from "./user";
-import grado from "./gradoEstudio";
-import publicacion from "./publicacion";
-import comentario from "./comentario";
-import grupo from "./grupo";
-import integrante from "./integrante"
+import auth from "../routes/auth";
+import user from "../routes/user";
+import grado from "../routes/gradoEstudio";
+import publicacion from "../routes/publicacion";
+import comentario from "../routes/comentario";
+import grupo from "../routes/grupo";
+import integrante from "../routes/integrante"
 
 const routes = Router();
 

@@ -1,5 +1,3 @@
-//mysql://:@/?reconnect=true
-
 module.exports={
    "type": "mysql",
    "host": "us-cdbr-east-03.cleardb.com",
@@ -16,7 +14,7 @@ module.exports={
       "dist/migration/**/*.js"
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      "dist/subscriber/**/*.js"
    ],
    "cli": {
       "entitiesDir": "src/entity",
