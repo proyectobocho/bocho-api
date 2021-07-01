@@ -17,7 +17,9 @@ var GradoEstudio_1 = require("./GradoEstudio");
 var Publicacion_1 = require("./Publicacion");
 var Comentario_1 = require("./Comentario");
 var Integrante_1 = require("./Integrante");
+var Like_1 = require("./Like");
 var User = /** @class */ (function () {
+    //@Unique(['email'])
     function User() {
     }
     User.prototype.hashPassword = function () {
@@ -34,20 +36,26 @@ var User = /** @class */ (function () {
     __decorate([
         typeorm_1.Column({ length: 30 }),
         class_validator_1.MinLength(3),
+        class_validator_1.MaxLength(30),
         class_validator_1.IsNotEmpty(),
+        class_validator_1.Matches(/^([a-zA-Z]|[\'\ñ\Ñ]?)*$/),
         __metadata("design:type", String)
     ], User.prototype, "nombre", void 0);
     __decorate([
         typeorm_1.Column({ length: 30 }),
         class_validator_1.MinLength(3),
+        class_validator_1.MaxLength(30),
         class_validator_1.IsNotEmpty(),
+        class_validator_1.Matches(/^([a-zA-Z]|[\'\ñ\Ñ]?)*$/),
         __metadata("design:type", String)
     ], User.prototype, "apellido", void 0);
     __decorate([
-        typeorm_1.Column({ length: 30 }),
+        typeorm_1.Column({ length: 30, unique: true }),
         class_validator_1.IsEmail(),
-        class_validator_1.MinLength(9),
+        class_validator_1.MinLength(5),
+        class_validator_1.MaxLength(30),
         class_validator_1.IsNotEmpty(),
+        class_validator_1.Matches(/\S+@\S+\.\S+/),
         __metadata("design:type", String)
     ], User.prototype, "email", void 0);
     __decorate([
@@ -67,6 +75,8 @@ var User = /** @class */ (function () {
     __decorate([
         typeorm_1.Column({ type: "date" }),
         class_validator_1.IsNotEmpty(),
+        class_validator_1.IsDate(),
+        class_validator_1.MaxDate(new Date),
         __metadata("design:type", Date)
     ], User.prototype, "fechaNacimiento", void 0);
     __decorate([
@@ -86,9 +96,13 @@ var User = /** @class */ (function () {
         typeorm_1.OneToMany(function () { return Integrante_1.Integrante; }, function (integrante) { return integrante.user; }),
         __metadata("design:type", Array)
     ], User.prototype, "integrante", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function () { return Like_1.Like; }, function (like) { return like.user; }),
+        __metadata("design:type", Array)
+    ], User.prototype, "like", void 0);
     User = __decorate([
-        typeorm_1.Entity(),
-        typeorm_1.Unique(['email'])
+        typeorm_1.Entity()
+        //@Unique(['email'])
     ], User);
     return User;
 }());

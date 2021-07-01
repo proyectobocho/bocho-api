@@ -1,13 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne, OneToMany } from "typeorm";
-import { isDate, IsEmail, IsNotEmpty, isNotEmpty, MinLength } from "class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsString, Matches, MaxDate, MaxLength, MinLength } from "class-validator";
 import * as bcrypt from "bcryptjs"
 import { GradoEstudio } from "./GradoEstudio";
 import { Publicacion } from "./Publicacion";
 import { Comentario } from "./Comentario";
 import { Integrante } from "./Integrante";
+import { Like } from "./Like";
 
 @Entity()
-@Unique(['email'])
+//@Unique(['email'])
 export class User {
 
     @PrimaryGeneratedColumn()
@@ -15,19 +16,25 @@ export class User {
 
     @Column({ length: 30 })
     @MinLength(3)
+    @MaxLength(30)
     @IsNotEmpty()
+    @Matches(/^([a-zA-Z]|[\'\ñ\Ñ]?)*$/)
     nombre: string;
 
     @Column({ length: 30 })
     @MinLength(3)
+    @MaxLength(30)
     @IsNotEmpty()
+    @Matches(/^([a-zA-Z]|[\'\ñ\Ñ]?)*$/)
     apellido: string;
 
-    @Column({length:30})
+    @Column({ length: 30, unique: true })
     @IsEmail()
-    @MinLength(9)
+    @MinLength(5)
+    @MaxLength(30)
     @IsNotEmpty()
-    email:string;
+    @Matches(/\S+@\S+\.\S+/)
+    email: string;
 
     @Column()
     @MinLength(8)
@@ -40,22 +47,27 @@ export class User {
     @Column({ type: "datetime" })
     modificado: Date;
 
-    @Column({type:"date"})
+    @Column({ type: "date" })
     @IsNotEmpty()
-    fechaNacimiento:Date;
+    @IsDate()
+    @MaxDate(new Date)
+    fechaNacimiento: Date;
 
-    @ManyToOne(()=>GradoEstudio,grado=>grado.users)
+    @ManyToOne(() => GradoEstudio, grado => grado.users)
     @IsNotEmpty()
-    grado:GradoEstudio;
+    grado: GradoEstudio;
 
-    @OneToMany(()=>Publicacion,publicacion=>publicacion.user)
-    publicaciones:Publicacion[];
+    @OneToMany(() => Publicacion, publicacion => publicacion.user)
+    publicaciones: Publicacion[];
 
-    @OneToMany(()=>Comentario,comentario=>comentario.user)
-    public comentario!:Comentario[];
+    @OneToMany(() => Comentario, comentario => comentario.user)
+    public comentario!: Comentario[];
 
-    @OneToMany(()=>Integrante,integrante=>integrante.user)
-    public integrante!:Integrante[];
+    @OneToMany(() => Integrante, integrante => integrante.user)
+    public integrante!: Integrante[];
+
+    @OneToMany(() => Like, like => like.user)
+    public like!: Like[];
 
     hashPassword(): void {
         const salt = bcrypt.genSaltSync(10);
@@ -65,4 +77,5 @@ export class User {
     cheakPassword(password: string): boolean {
         return bcrypt.compareSync(password, this.password)
     }
+
 }

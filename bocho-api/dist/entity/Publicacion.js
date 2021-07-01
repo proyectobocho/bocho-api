@@ -14,6 +14,7 @@ var class_validator_1 = require("class-validator");
 var typeorm_1 = require("typeorm");
 var Comentario_1 = require("./Comentario");
 var Grupo_1 = require("./Grupo");
+var Like_1 = require("./Like");
 var User_1 = require("./User");
 var Publicacion = /** @class */ (function () {
     //agregar validaciones con class-validator
@@ -60,6 +61,10 @@ var Publicacion = /** @class */ (function () {
         typeorm_1.ManyToOne(function () { return Grupo_1.Grupo; }, function (grupo) { return grupo.publicaciones; }),
         __metadata("design:type", Grupo_1.Grupo)
     ], Publicacion.prototype, "grupo", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function () { return Like_1.Like; }, function (like) { return like.publicacion; }),
+        __metadata("design:type", Array)
+    ], Publicacion.prototype, "like", void 0);
     Publicacion = __decorate([
         typeorm_1.Entity()
         //agregar validaciones con class-validator

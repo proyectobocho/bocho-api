@@ -10,7 +10,7 @@ export class GrupoController {
         const grupoRepo = getRepository(Grupo);
         let grupos;
         try {
-            grupos = await grupoRepo.find({ select: ["creacion", "descripcion", "id", "nombre", "foto"] })
+            grupos = await grupoRepo.find({ select: ["creacion", "descripcion", "id", "nombre", "foto"] });
 
         } catch (e) {
             console.log("e: ", e);

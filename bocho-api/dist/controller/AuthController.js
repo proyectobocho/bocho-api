@@ -41,6 +41,8 @@ var User_1 = require("../entity/User");
 var jwt = require("jsonwebtoken");
 var config_1 = require("../config/config");
 var class_validator_1 = require("class-validator");
+var GradoEstudio_1 = require("../entity/GradoEstudio");
+var mailer_1 = require("../config/mailer");
 var AuthController = /** @class */ (function () {
     function AuthController() {
     }
@@ -69,33 +71,39 @@ var AuthController = /** @class */ (function () {
                         return [2 /*return*/, res.status(400).json({ message: "Usuario y/o contraseña incorrecto" })];
                     }
                     token = jwt.sign({ userId: user.id, email: user.email }, config_1.default.jwtSecret, { expiresIn: "1h" });
-                    res.json({ message: "ok", token: token, userId: user.id, user: { email: user.email, nombre: user.nombre, apellido: user.apellido } });
-                    return [2 /*return*/];
+                    return [2 /*return*/, res.json({ message: "ok", token: token, userId: user.id, user: { email: user.email, nombre: user.nombre, apellido: user.apellido } })];
             }
         });
     }); };
     AuthController.newUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, nombre, apellido, password, email, nacimiento, grado, user, fecha, validationOpt, errors, err, i, j, userRepo, e_2;
+        var _a, nombre, apellido, password, email, nacimiento, grado, user, fecha, año, err, validationOpt, errors, i, j, gradoRepo, e_2, userRepo, e_3, e_4;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _a = req.body, nombre = _a.nombre, apellido = _a.apellido, password = _a.password, email = _a.email, nacimiento = _a.nacimiento, grado = _a.grado;
                     user = new User_1.User();
                     fecha = new Date();
+                    año = new Date(nacimiento);
                     user.nombre = nombre;
                     user.apellido = apellido;
                     user.password = password;
                     user.creado = fecha;
                     user.modificado = fecha;
                     user.email = email;
-                    user.fechaNacimiento = nacimiento;
+                    user.fechaNacimiento = año;
                     user.grado = grado;
+                    err = [];
                     validationOpt = { validationError: { target: false, value: false } };
+                    if (isNaN(parseInt(grado))) {
+                        err.push({
+                            "message": "grado must be a number",
+                            "campo": "grado"
+                        });
+                    }
                     return [4 /*yield*/, class_validator_1.validate(user, validationOpt)];
                 case 1:
                     errors = _b.sent();
-                    if (errors.length > 0) {
-                        err = [];
+                    if (errors.length > 0 || err.length > 0) {
                         for (i in errors) {
                             for (j in errors[i].constraints) {
                                 err.push({
@@ -104,30 +112,56 @@ var AuthController = /** @class */ (function () {
                                 });
                             }
                         }
-                        //console.log(err);
                         return [2 /*return*/, res.status(400).json({ message: err })];
                     }
-                    userRepo = typeorm_1.getRepository(User_1.User);
+                    gradoRepo = typeorm_1.getRepository(GradoEstudio_1.GradoEstudio);
                     _b.label = 2;
                 case 2:
                     _b.trys.push([2, 4, , 5]);
-                    user.hashPassword();
-                    return [4 /*yield*/, userRepo.save(user)];
+                    return [4 /*yield*/, gradoRepo.findOneOrFail(grado)];
                 case 3:
                     _b.sent();
                     return [3 /*break*/, 5];
                 case 4:
                     e_2 = _b.sent();
-                    //console.log(e);
-                    return [2 /*return*/, res.status(409).json({ message: "el usuario ya existe" })];
+                    console.log("e", e_2);
+                    return [2 /*return*/, res.status(400).json({ message: "no se encontro el grado de estudio" })];
                 case 5:
-                    res.status(200).json({ message: "usuario creado" });
-                    return [2 /*return*/];
+                    userRepo = typeorm_1.getRepository(User_1.User);
+                    _b.label = 6;
+                case 6:
+                    _b.trys.push([6, 8, , 9]);
+                    user.hashPassword();
+                    return [4 /*yield*/, userRepo.save(user)];
+                case 7:
+                    _b.sent();
+                    return [3 /*break*/, 9];
+                case 8:
+                    e_3 = _b.sent();
+                    console.log(e_3);
+                    return [2 /*return*/, res.status(409).json({ message: "el usuario ya existe y/o hubo problemas al registrar" })];
+                case 9:
+                    _b.trys.push([9, 11, , 12]);
+                    return [4 /*yield*/, mailer_1.transporter.sendMail({
+                            from: '"Bocho 👻" <proyectobocho@gmail.com>',
+                            to: user.email,
+                            subject: "Registro ✔",
+                            //text: "Hello world?", // plain text body
+                            html: "\n                <p>Gracias " + user.nombre + " " + user.apellido + " por registrarse en <b>BOCHO</b></p>\n                <br>\n                <a href=\"https://proyecto-bocho.herokuapp.com\">IR A BOCHO</a>",
+                        })];
+                case 10:
+                    _b.sent();
+                    return [3 /*break*/, 12];
+                case 11:
+                    e_4 = _b.sent();
+                    console.log("error email: ", e_4);
+                    return [3 /*break*/, 12];
+                case 12: return [2 /*return*/, res.status(200).json({ message: "usuario creado" })];
             }
         });
     }); };
     AuthController.changePassword = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var userId, _a, oldPassword, newPassword, userRepo, user, e_3, validationOpt, errors;
+        var userId, _a, oldPassword, newPassword, userRepo, user, e_5, validationOpt, errors;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -145,7 +179,7 @@ var AuthController = /** @class */ (function () {
                     user = _b.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    e_3 = _b.sent();
+                    e_5 = _b.sent();
                     res.status(400).json({ message: "algo anda mal :V" });
                     return [3 /*break*/, 4];
                 case 4:

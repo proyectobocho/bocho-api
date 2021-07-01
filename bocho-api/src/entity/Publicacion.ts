@@ -2,6 +2,7 @@ import { IsNotEmpty } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comentario } from "./Comentario";
 import { Grupo } from "./Grupo";
+import { Like } from "./Like";
 import { User } from "./User";
 
 @Entity()
@@ -37,4 +38,7 @@ export class Publicacion {
 
     @ManyToOne(() => Grupo, grupo => grupo.publicaciones)
     grupo: Grupo;
+
+    @OneToMany(() => Like, like => like.publicacion)
+    public like!: Comentario[];    
 }
