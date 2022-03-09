@@ -66,6 +66,6 @@ typeorm_1.createConnection()
     });
 }); })
     .catch(function (error) {
-    console.log(error);
+    console.log("error-> ", error);
 });
 //# sourceMappingURL=index.js.map
