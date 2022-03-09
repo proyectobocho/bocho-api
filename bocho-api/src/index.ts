@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 
 createConnection()
-    .then(async => {
+    .then(async () => {
 
         // create express app
         const app = express();
